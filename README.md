@@ -1,5 +1,5 @@
 # SourceCodeLineCounter_JavaFX
-Utitilty to count lines of code in a given directory
+Utitilty to recursively the count lines of code in a given directory
 
 *Editor: Eclipse, Vim
 *Frameworks: JavaFX
