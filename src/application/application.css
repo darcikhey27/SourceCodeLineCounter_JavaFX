@@ -1,1 +1,35 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+
+/* add rules here */
+AnchorPane {
+	-fx-background-color: rgb(101, 101, 101);
+}
+
+TextField {
+	-fx-background-color: #a9a9a9 , white , white;
+}
+.labels {
+	-fx-font-size: 12px;
+    -fx-fill: white;
+    -fx-font-family: Consolas;
+}
+
+VBox{
+	  
+	-fx-background-color: rgb(101, 101, 101);
+}
+
+#buttonEnter {
+	
+	-fx-background-color: rgb(124,187,0)
+	
+}
+
+#buttonExit{
+	-fx-background-color: rgb(219, 68, 55);
+	
+}
+

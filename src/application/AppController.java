@@ -15,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class AppController implements Initializable {
 
@@ -28,6 +29,8 @@ public class AppController implements Initializable {
     private TextField fileExtTextField;
     @FXML
     private Button buttonEnter;
+    @FXML
+    private Button buttonExit;
 
     private static ArrayList<File> keepFiles = new ArrayList<File>();
     private Scanner input;
@@ -36,7 +39,16 @@ public class AppController implements Initializable {
     /* method will get the String from the TextFiled on button click */
     @FXML
     public void buttonClick(ActionEvent event) {
+	// get the path from the user
 	String path = enterPathTextField.getText();
+	if(!isValidPath(path)) {
+	    // show error message box
+	    showErrorMsgBox(path);
+	    enterPathTextField.clear();
+	    return;
+	}
+	// good path
+	
 	pathOuput = path;
 	String fileExt = fileExtTextField.getText();
 
@@ -44,15 +56,39 @@ public class AppController implements Initializable {
 	input = new Scanner(System.in);
 	int count = processFiles(input);
 	
-	// show message box
+	// show the results message box
 	Alert alert = new Alert(AlertType.INFORMATION);
 	alert.setTitle("SourceCode LineCounter");
 	alert.setHeaderText("Directory: "+ pathOuput);
 	alert.setContentText(printMsg(count));
 
 	alert.showAndWait();
-	
+    }
+    
+    @FXML
+    public void exitButtonClick(ActionEvent event) {
+	Stage stage = (Stage) buttonExit.getScene().getWindow();
+	stage.close();
+    }
+    
+    private void showErrorMsgBox(String path) {
+	Alert alert = new Alert(AlertType.INFORMATION);
+	alert.setTitle("Invalid path");
+	alert.setHeaderText(null);
+	alert.setContentText("Path: "+ path +" is invalid");
 
+	alert.showAndWait();
+    }
+
+    private boolean isValidPath(String path) {
+	if(path == null || path.isEmpty()) {
+	    return false;
+	}
+	File file = new File(path);
+	if(file.isDirectory()) {
+	   return true;
+	}
+	return false;
     }
 
     private int processFiles(Scanner fileInput) {
@@ -75,13 +111,15 @@ public class AppController implements Initializable {
 		    if (line.startsWith("/**")) {
 			blockCommentCount++;
 			startedBlock = true;
-		    } else if (line.endsWith("*/")) {
+		    } 
+		    else if (line.endsWith("*/")) {
 			blockCommentCount++;
 			lineCount = getCount(lineCount, blockCommentCount, startedBlock);
 			// reset block comment variables
 			startedBlock = false;
 			blockCommentCount = 0;
-		    } else {
+		    } 
+		    else {
 			if (startedBlock) {
 			    blockCommentCount++;
 			}
@@ -96,7 +134,7 @@ public class AppController implements Initializable {
 
     // subtract the block comment lines
     private int getCount(int lineCount, int blockCount, boolean startedBlock) {
-	if (startedBlock) {
+	if(startedBlock) {
 	    return lineCount - blockCount;
 	}
 	return lineCount;
@@ -111,6 +149,7 @@ public class AppController implements Initializable {
 
 	    if (f.isFile()) {
 		if (f.getName().endsWith(fileExt)) {
+		    // if the files match our file extension add them to our arraylist
 		    keepFiles.add(f);
 		}
 	    }

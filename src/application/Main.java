@@ -12,12 +12,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 	try {
-	    Parent root = FXMLLoader.load(getClass().getResource("Sample.fxml"));
+	    Parent root = FXMLLoader.load(getClass().getResource("FXMLdocument.fxml"));
 	    Scene scene = new Scene(root);
 	    scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 	    primaryStage.setTitle("Darci source code count");
 	    primaryStage.setScene(scene);
 	    primaryStage.show();
+	    primaryStage.setResizable(false);
 
 	} catch (Exception e) {
 	    e.printStackTrace();
