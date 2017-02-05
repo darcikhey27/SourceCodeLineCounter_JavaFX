@@ -53,7 +53,7 @@ public class MySearch {
     }// end main
 
     public static void runSearch(String path, String fileName, String fileExt, String content, String date) {
-													     
+
 	findAllFiles(path);
 
 	if (fileName != null && !fileName.isEmpty()) { // search by file name
@@ -149,8 +149,7 @@ public class MySearch {
 	for (File file : fileArray) {
 	    if (file.isFile()) {
 		fileList.add(file);
-	    } 
-	    else if (file.isDirectory()) { // recursive call, go in the
+	    } else if (file.isDirectory()) { // recursive call, go in the
 					     // warmhole
 		findAllFiles(file.getAbsolutePath());
 	    }

@@ -3,146 +3,144 @@ package application;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 public class AppController implements Initializable {
-    
-   @FXML private Text pathTextLabel;
-   @FXML private Text fileExtLabel;
-   @FXML private TextField enterPathTextField;
-   @FXML private TextField fileExtTextField;
-   @FXML private Button buttonEnter;
-    
-   Scanner inputFile; 
-   private int linesCount;
-   private int filesCount;
-    
-    
-    /* method will get the String from the TextFiled on button click*/
-   @FXML 
+
+    @FXML
+    private Text pathTextLabel;
+    @FXML
+    private Text fileExtLabel;
+    @FXML
+    private TextField enterPathTextField;
+    @FXML
+    private TextField fileExtTextField;
+    @FXML
+    private Button buttonEnter;
+
+    private static ArrayList<File> keepFiles = new ArrayList<File>();
+    private Scanner input;
+    private String pathOuput;
+
+    /* method will get the String from the TextFiled on button click */
+    @FXML
     public void buttonClick(ActionEvent event) {
-      String path = enterPathTextField.getText();
-      String fileExt = fileExtTextField.getText();
-   
-   //validatePath(path);
-      System.out.println("the path you enter was "+ path);
-   
-   
-   
-      startProgram(path, fileExt);
-   
-   
-   
-   
-   }
-    
-   private void startProgram(String path, String fileExt) {
-   // C:\testDir
-   /* pre-test path */
-      File dir = new File(path); // create a File direcotry object
-   
-   
-   /* the recursive call is going to happen somewhere here */
-   
-   // count files in this directory
-      File[] sourceFilesArray = dir.listFiles();
-   
-   // save the number of files in this dir
-      filesCount = sourceFilesArray.length;
-   
-   // read files
-   
-      readFiles(sourceFilesArray);
-   
-   
-      System.out.println("Couting source files with extension "+ fileExt);
-   
-   
-      printFiles(sourceFilesArray); // print the files in that direcotry
-   
-   
-   
-   // isDirectory()
-   // isFile()
-   
-   
-   }
-   private void readFiles(File[] sourceFiles) {
-      int lines = 0;
-      for(File file : sourceFiles) {
-       
-       //read file
-         processFile(file);
-      
-      }
-   
-   }
+	String path = enterPathTextField.getText();
+	pathOuput = path;
+	String fileExt = fileExtTextField.getText();
 
-   private void processFile(File file) {
-      int blockCommentCount = 0;
-      int lineCounter = 0;
-      try {
-       // connect to one file 
-         inputFile = new Scanner(file);
-       
-         while(inputFile.hasNextLine()) {
-         
-            String lineOfCode = inputFile.nextLine();
-            lineCounter++;
-         
-            System.out.println(lineOfCode);
-            if(!lineOfCode.isEmpty() && !lineOfCode.equals(" ")) {
-            
-               if(lineOfCode.startsWith("/**")) {
-                  blockCommentCount++;
-               }
-               else if(lineOfCode.endsWith("*/")) {
-                  lineCounter = lineCounter - blockCommentCount;
-               }
-               else {
-                  lineCounter++;
-               }
-            }
-              
-         }
-         System.out.println("done counting file: "+ file.getName());
-         System.out.println("Total lines for this file were: "+ lineCounter);
-      
-       
-       
-       //inputFile.close();
-       
-      } 
-      catch (FileNotFoundException e) {
-       
-         System.out.println("Error reading file ");
-      }
-   
-   }
-  
-
-   private void printFiles(File[] files) {
-      for(File file : files) {
-         System.out.println(file.getName());
-      }
-   }
-    
-    
-    
-    
-    
-   @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
-   // TODO Auto-generated method stub
-   
-   }
+	readFiles(path, fileExt);
+	input = new Scanner(System.in);
+	int count = processFiles(input);
 	
+	// show message box
+	Alert alert = new Alert(AlertType.INFORMATION);
+	alert.setTitle("SourceCode LineCounter");
+	alert.setHeaderText("Directory: "+ pathOuput);
+	alert.setContentText(printMsg(count));
+
+	alert.showAndWait();
+	
+
+    }
+
+    private int processFiles(Scanner fileInput) {
+	int lineCount = 0;
+	int blockCommentCount = 0;
+	boolean startedBlock = false;
+
+	for (File file : keepFiles) {
+	    try {
+		fileInput = new Scanner(file);
+		while (fileInput.hasNextLine()) {
+
+		    String line = fileInput.nextLine().trim();
+		    if (line.equals("") || line.startsWith("//")) {
+			continue;
+		    }
+		    lineCount++;
+		    // System.out.println(line);
+
+		    if (line.startsWith("/**")) {
+			blockCommentCount++;
+			startedBlock = true;
+		    } else if (line.endsWith("*/")) {
+			blockCommentCount++;
+			lineCount = getCount(lineCount, blockCommentCount, startedBlock);
+			// reset block comment variables
+			startedBlock = false;
+			blockCommentCount = 0;
+		    } else {
+			if (startedBlock) {
+			    blockCommentCount++;
+			}
+		    }
+		}
+	    } catch (FileNotFoundException e) {
+		System.out.println("Error conencting to: " + file.getName());
+	    }
+	}// end reading all the files
+	return lineCount;
+    }
+
+    // subtract the block comment lines
+    private int getCount(int lineCount, int blockCount, boolean startedBlock) {
+	if (startedBlock) {
+	    return lineCount - blockCount;
+	}
+	return lineCount;
+    }
+
+    /* save the files we want to the keepFiles ArrayList */
+    private void readFiles(String dirPath, String fileExt) {
+	File dir = new File(dirPath);
+	File[] filesArray = dir.listFiles();
+
+	for (File f : filesArray) {
+
+	    if (f.isFile()) {
+		if (f.getName().endsWith(fileExt)) {
+		    keepFiles.add(f);
+		}
+	    }
+	    // making the recursive call on a directory
+	    else if (f.isDirectory()) {
+		readFiles(f.getAbsolutePath(), fileExt);
+	    }
+	}
+    }
+
+    private String printFiles() {
+	String retString = "";
+	for (File file : keepFiles) {
+	    retString += file.getName() + "\n";
+	}
+	return retString;
+    }
+    
+    public String printMsg(int sourceCodeLines) {
+	String retString = "";
+	retString += "Source lines of code: " + sourceCodeLines+"\n";
+	retString += "Files processed: " + keepFiles.size() + "\n";
+	retString += "\n"+ printFiles();
+	return retString;
+    }
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+	// TODO Auto-generated method stub
+
+    }
+
 }
