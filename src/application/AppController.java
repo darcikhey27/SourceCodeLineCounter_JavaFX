@@ -15,129 +15,134 @@ import javafx.scene.text.Text;
 
 public class AppController implements Initializable {
     
-    @FXML private Text pathTextLabel;
-    @FXML private Text fileExtLabel;
-    @FXML private TextField enterPathTextField;
-    @FXML private TextField fileExtTextField;
-    @FXML private Button buttonEnter;
+   @FXML private Text pathTextLabel;
+   @FXML private Text fileExtLabel;
+   @FXML private TextField enterPathTextField;
+   @FXML private TextField fileExtTextField;
+   @FXML private Button buttonEnter;
     
-    Scanner inputFile; 
-    private int linesCount;
-    private int filesCount;
+   Scanner inputFile; 
+   private int linesCount;
+   private int filesCount;
     
     
     /* method will get the String from the TextFiled on button click*/
-    @FXML 
+   @FXML 
     public void buttonClick(ActionEvent event) {
-	String path = enterPathTextField.getText();
-	String fileExt = fileExtTextField.getText();
-	
-	//validatePath(path);
-	System.out.println("the path you enter was "+ path);
-	
-	
-	
-	startProgram(path, fileExt);
-	
-	
-	
-	
-    }
+      String path = enterPathTextField.getText();
+      String fileExt = fileExtTextField.getText();
+   
+   //validatePath(path);
+      System.out.println("the path you enter was "+ path);
+   
+   
+   
+      startProgram(path, fileExt);
+   
+   
+   
+   
+   }
     
-    private void startProgram(String path, String fileExt) {
-	// C:\testDir
-	/* pre-test path */
-	File dir = new File(path); // create a File direcotry object
-	
-	// count files in this directory
-	File[] sourceFilesArray = dir.listFiles();
-	
-	// save the number of files in this dir
-	filesCount = sourceFilesArray.length;
-	
-	// read files
-	
-	readFiles(sourceFilesArray);
-	
-	
-	System.out.println("Couting source files with extension "+ fileExt);
-	
-	
-	printFiles(sourceFilesArray); // print the files in that direcotry
-	
-	
-	
-	// isDirectory()
-	// isFile()
-	
-	
-    }
-    private void readFiles(File[] sourceFiles) {
-	int lines = 0;
-	for(File file : sourceFiles) {
-	    
-	    //read file
-	    processFile(file);
-	
-	}
-	
-    }
+   private void startProgram(String path, String fileExt) {
+   // C:\testDir
+   /* pre-test path */
+      File dir = new File(path); // create a File direcotry object
+   
+   
+   /* the recursive call is going to happen somewhere here */
+   
+   // count files in this directory
+      File[] sourceFilesArray = dir.listFiles();
+   
+   // save the number of files in this dir
+      filesCount = sourceFilesArray.length;
+   
+   // read files
+   
+      readFiles(sourceFilesArray);
+   
+   
+      System.out.println("Couting source files with extension "+ fileExt);
+   
+   
+      printFiles(sourceFilesArray); // print the files in that direcotry
+   
+   
+   
+   // isDirectory()
+   // isFile()
+   
+   
+   }
+   private void readFiles(File[] sourceFiles) {
+      int lines = 0;
+      for(File file : sourceFiles) {
+       
+       //read file
+         processFile(file);
+      
+      }
+   
+   }
 
-    private void processFile(File file) {
-	try {
-	    // connect to one file 
-	    inputFile = new Scanner(file);
-	    int linesCount = 0;
-	    while(inputFile.hasNextLine()) {
-		
-		String lineOfCode = inputFile.nextLine();
-		linesCount = processLineOfCode(lineOfCode);
-		
-		//System.out.println(inputFile.nextLine());
-		
-		linesCount++;
-	    }
-	    System.out.println("done counting file: "+ file.getName());
-	    System.out.println("Total lines for this file were: "+ linesCount);
-	    
-	    
-	    //inputFile.close();
-	    
-	} 
-	catch (FileNotFoundException e) {
-	    
-	    System.out.println("Error reading file ");
-	}
-	
-    }
-    private int processLineOfCode(String lineOfCode) {
-	
-	// TODO if the line of code is blank do nothing
-	// if the line is a \n do nothing
-	// if the line is comment do nothing etc...
-	//
-	int lineCounter = 0;
-	if(lineOfCode != null && !lineOfCode.equals("\n")){
-	    
-	}
-	
-	return 0;
-    }
+   private void processFile(File file) {
+      int blockCommentCount = 0;
+      int lineCounter = 0;
+      try {
+       // connect to one file 
+         inputFile = new Scanner(file);
+       
+         while(inputFile.hasNextLine()) {
+         
+            String lineOfCode = inputFile.nextLine();
+            lineCounter++;
+         
+            System.out.println(lineOfCode);
+            if(!lineOfCode.isEmpty() && !lineOfCode.equals(" ")) {
+            
+               if(lineOfCode.startsWith("/**")) {
+                  blockCommentCount++;
+               }
+               else if(lineOfCode.endsWith("*/")) {
+                  lineCounter = lineCounter - blockCommentCount;
+               }
+               else {
+                  lineCounter++;
+               }
+            }
+              
+         }
+         System.out.println("done counting file: "+ file.getName());
+         System.out.println("Total lines for this file were: "+ lineCounter);
+      
+       
+       
+       //inputFile.close();
+       
+      } 
+      catch (FileNotFoundException e) {
+       
+         System.out.println("Error reading file ");
+      }
+   
+   }
+  
 
-    private void printFiles(File[] files) {
-	for(File file : files) {
-	    System.out.println(file.getName());
-	}
-    }
+   private void printFiles(File[] files) {
+      for(File file : files) {
+         System.out.println(file.getName());
+      }
+   }
     
     
     
     
     
-    @Override
+   @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-	// TODO Auto-generated method stub
-	
-    }
+   // TODO Auto-generated method stub
+   
+   }
 	
 }
