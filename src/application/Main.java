@@ -15,7 +15,7 @@ public class Main extends Application {
 	    Parent root = FXMLLoader.load(getClass().getResource("FXMLdocument.fxml"));
 	    Scene scene = new Scene(root);
 	    scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-	    primaryStage.setTitle("Darci source code count");
+	    primaryStage.setTitle("DK SourceCode LineCounter");
 	    primaryStage.setScene(scene);
 	    primaryStage.show();
 	    primaryStage.setResizable(false);
