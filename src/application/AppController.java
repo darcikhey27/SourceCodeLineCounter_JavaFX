@@ -108,11 +108,11 @@ public class AppController implements Initializable {
 		    lineCount++;
 		    // System.out.println(line);
 
-		    if (line.startsWith("/**")) {
+		    if (line.startsWith("/**") || line.startsWith("/*")) {
 			blockCommentCount++;
 			startedBlock = true;
 		    } 
-		    else if (line.endsWith("*/")) {
+		    else if (line.endsWith("*/") || line.startsWith("*/")) {
 			blockCommentCount++;
 			lineCount = getCount(lineCount, blockCommentCount, startedBlock);
 			// reset block comment variables
@@ -125,6 +125,7 @@ public class AppController implements Initializable {
 			}
 		    }
 		}
+		System.out.println(lineCount);
 	    } catch (FileNotFoundException e) {
 		System.out.println("Error conencting to: " + file.getName());
 	    }
