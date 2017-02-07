@@ -95,7 +95,8 @@ public class AppController implements Initializable {
 	int lineCount = 0;
 	int blockCommentCount = 0;
 	boolean startedBlock = false;
-
+	
+	/* main algorithm */
 	for (File file : keepFiles) {
 	    try {
 		fileInput = new Scanner(file);
@@ -125,7 +126,7 @@ public class AppController implements Initializable {
 			}
 		    }
 		}
-		System.out.println(lineCount);
+		System.out.printf("Lines for this %s file %d\n", file.getName(), lineCount);
 	    } catch (FileNotFoundException e) {
 		System.out.println("Error conencting to: " + file.getName());
 	    }
