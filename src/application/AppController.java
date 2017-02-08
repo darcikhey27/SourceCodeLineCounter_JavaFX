@@ -126,7 +126,7 @@ public class AppController implements Initializable {
 			}
 		    }
 		}
-		System.out.printf("Lines for this %s file %d\n", file.getName(), lineCount);
+		//System.out.printf("Lines for this %s file %d\n", file.getName(), lineCount);
 	    } catch (FileNotFoundException e) {
 		System.out.println("Error conencting to: " + file.getName());
 	    }
