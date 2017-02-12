@@ -9,8 +9,7 @@ Authors: Darci K
 ####_mind wide open_
 
 ### program description  
-The program asks the user for an absolute path to a directory that   
-contains source files. It also asks the user for the file extension  
+The program asks the user for an absolute path to a directory that contains source files. It also asks the user for the file extension  
 for the source files (e.g java for Java files, cs for C# files, etc.)  
 The program repots the following the following:  
 •	the number of source files processed
