@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -59,6 +60,8 @@ public class AppController implements Initializable {
 	// show the results message box
 	Alert alert = new Alert(AlertType.INFORMATION);
 	alert.setTitle("SourceCode LineCounter");
+	Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+	stage.getIcons().add(new Image(this.getClass().getResource("java_icon.png").toString()));
 	alert.setHeaderText("Directory: "+ pathOuput);
 	alert.setContentText(printMsg(count));
 
