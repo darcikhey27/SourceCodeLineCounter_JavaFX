@@ -14,4 +14,4 @@ The program reports the following:
 •	the number of source files processed    
 •	the total number of lines of code in all the source files  
   
-  ![image](https://cloud.githubusercontent.com/assets/13792997/22860713/0cfc5dc8-f0bb-11e6-8f8d-26bada4a9cdc.png)
+ 
